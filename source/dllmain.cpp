@@ -156,6 +156,138 @@ void PerformHexEdits() {
 
 //=======================================================================================================================================================================================
 
+//=======================================================================================================================================================================================
+
+// chip - 2: aspect ratio
+
+
+const std::vector<BYTE> commonHexEdit2 = { 0x39, 0x8E, 0xE3, 0x3F };
+
+struct HexEdit2 {
+    std::vector<BYTE> modified2;
+    size_t offset2;
+};
+
+// index for hex edits for aspect ratio 
+
+HexEdit2 CreateHexEditFromAspect(int aspectIndex) {
+    HexEdit2 edit2;
+
+    switch (aspectIndex) {
+    case 1:
+        edit2.modified2 = { 0xCD, 0xCC, 0xCC, 0x3F };                 //16:10
+        edit2.offset2 = 0;
+        break;
+    case 2:
+        edit2.modified2 = { 0x26, 0xB4, 0x17, 0x40 };                //21:9 (2560x1080)
+        edit2.offset2 = 0;
+        break;
+    case 3:
+        edit2.modified2 = { 0x8E, 0xE3, 0x18, 0x40 };                //21:9 (3440x1440)
+        edit2.offset2 = 0;
+        break;
+    case 4:
+        edit2.modified2 = { 0x9A, 0x99, 0x19, 0x40 };                //21:9 (3840x1600)
+        edit2.offset2 = 0;
+        break;
+    case 5:
+        edit2.modified2 = { 0x39, 0x8E, 0x63, 0x40 };                //32:10
+        edit2.offset2 = 0;
+        break;
+    default:
+        DX_ERROR("Invalid resolution index.")
+
+            break;
+    }
+
+    return edit2;
+}
+
+void PerformHexEdit2(LPBYTE lpAddress, DWORD moduleSize, const HexEdit2& edit2) {
+    for (DWORD i = 0; i < moduleSize - edit2.modified2.size(); ++i) {
+        if (memcmp(lpAddress + i, commonHexEdit2.data(), commonHexEdit2.size()) == 0) {
+            DX_PRINT("Pattern found in memory 2.")
+
+                LPVOID lpAddressToWrite = lpAddress + i + edit2.offset2;
+            SIZE_T numberOfBytesWritten;
+            HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, GetCurrentProcessId());
+            if (hProcess == NULL) {
+                DX_ERROR("Failed to open process for writing memory.")
+                    return;
+            }
+
+            // Change page protection to allow writing
+            DWORD oldProtection;
+            if (!VirtualProtectEx(hProcess, lpAddressToWrite, edit2.modified2.size(), PAGE_EXECUTE_READWRITE, &oldProtection)) {
+                DX_ERROR("Failed to change page protection.")
+                    CloseHandle(hProcess);
+                return;
+            }
+
+            BOOL result = WriteProcessMemory(hProcess, lpAddressToWrite, edit2.modified2.data(), edit2.modified2.size(), &numberOfBytesWritten);
+            CloseHandle(hProcess);
+            if (!result || numberOfBytesWritten != edit2.modified2.size()) {
+                DX_ERROR("Failed to write memory 2.")
+                    return;
+            }
+
+            // Restore original page protection
+            DWORD dummy;
+            VirtualProtectEx(hProcess, lpAddressToWrite, edit2.modified2.size(), oldProtection, &dummy);
+
+            DX_ERROR("Hex edited successfully 2.")
+                return;
+        }
+    }
+    DX_PRINT("Pattern not found in memory.")
+}
+
+void PerformHexEdits2() {
+    HMODULE hModule = GetModuleHandle(NULL);
+    if (hModule == NULL) {
+        DX_ERROR("Failed to get module handle.")
+            return;
+    }
+
+    // Get the module information
+    LPBYTE lpAddress = reinterpret_cast<LPBYTE>(hModule);
+    DWORD moduleSize = 0;
+    TCHAR szFileName[MAX_PATH];
+    if (GetModuleFileNameEx(GetCurrentProcess(), hModule, szFileName, MAX_PATH)) {
+        moduleSize = GetFileSize(szFileName, NULL);
+    }
+    if (moduleSize == 0) {
+        DX_ERROR("Failed to get module information.")
+            return;
+    }
+
+    // ini
+    char path[MAX_PATH];
+    HMODULE hm = NULL;
+    GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, (LPCSTR)&Direct3DCreate9, &hm);
+    GetModuleFileNameA(hm, path, sizeof(path));
+    strcpy(strrchr(path, '\\'), "\\d3d9.ini");
+
+    // Read resolution index from the INI file
+    int aspectIndex = GetPrivateProfileInt("fullscreenaspectratio", "fullscreenaspectratio", 0, path);
+    if (aspectIndex == 0) {
+        DX_ERROR("Failed to read aspect index from INI file.")
+            return;
+    }
+
+    HexEdit2 edit2 = CreateHexEditFromAspect(aspectIndex);
+    if (edit2.modified2.empty()) {
+        DX_ERROR("Failed to create hex edit for aspect index: ")
+            return;
+    }
+
+    PerformHexEdit2(lpAddress, moduleSize, edit2);
+}
+
+
+// chip - 2: aspect ratio
+//=======================================================================================================================================================================================
+
 void HookModule(HMODULE hmod);
 
 class FrameLimiter
@@ -1036,6 +1168,8 @@ bool WINAPI DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
         {
 
             PerformHexEdits();
+
+            PerformHexEdits2();
 
         }
 
