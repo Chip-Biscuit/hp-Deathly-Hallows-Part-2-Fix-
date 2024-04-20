@@ -1,5 +1,5 @@
 # hp-Deathly-Hallows-Part-2-Fix-
-This is the Harry Potter and the Deathly Hallows Part 1 d3d9 wrapper which is based from 13AG d3d9.dll wrapper.
+This is the Harry Potter and the Deathly Hallows Part 2 d3d9 wrapper which is based from 13AG d3d9.dll wrapper.
 
 https://github.com/ThirteenAG/d3d9-wrapper
 
@@ -16,8 +16,6 @@ if you would like to leave feedback or submit a bug please use the form provided
 https://docs.google.com/forms/d/e/1FAIpQLSdv3ZLgAC4CnxVHoOOSJA9NLVqlkPf2qENGehvCtfkkzZc1dw/viewform?usp=sharing
 
 brought to you by Fix Enhancers
-
-[this fix as it stands is a beta and the game is still being looked into, we are looking into capping the menus to 30fps so they dont run so fast. Future updates will be posted so keep an eye out]
 
 Team:
 
