@@ -65,6 +65,7 @@ float fFPSLimit;
 int nFullScreenRefreshRateInHz;
 int nForceWindowStyle;
 int nResolution;
+bool bFov;
 
 char WinDir[MAX_PATH + 1];
 
@@ -286,6 +287,89 @@ void PerformHexEdits2() {
 
 
 // chip - 2: aspect ratio
+//=======================================================================================================================================================================================
+
+//=======================================================================================================================================================================================
+
+//chip - 3 fov
+
+// Struct to hold hex edit information
+struct HexEdit3 {
+    std::vector<BYTE> pattern;
+    std::vector<BYTE> newValue;
+    size_t offset; // Offset of the byte to modify within the pattern
+};
+
+// Function to perform the hex edit
+void PerformHexEdit3(LPBYTE lpAddress, DWORD moduleSize) {
+    // Define the edits
+    std::vector<HexEdit> edits = {
+        // set fov zoomed out on all chars
+        { { 0x00, 0x00, 0x00, 0xA0, 0x46, 0xDF, 0x91, 0x3F }, { 0x9A, 0x99, 0x99, 0x99, 0x99, 0x99, 0x99, 0x3F }, 0 },
+    };
+
+    // Iterate through the edits
+    for (const auto& edit : edits) {
+        // Search for the pattern in memory
+        for (DWORD i = 0; i < moduleSize - edit.pattern.size(); ++i) {
+            if (memcmp(lpAddress + i, edit.pattern.data(), edit.pattern.size()) == 0) {
+                // Pattern found in memory
+                DX_PRINT("Pattern found in memory.")
+
+                    // Change memory protection to allow writing
+                    DWORD oldProtect;
+                if (!VirtualProtect(lpAddress + i + edit.offset, edit.newValue.size(), PAGE_EXECUTE_READWRITE, &oldProtect)) {
+                    DX_ERROR("Failed to change memory protection.")
+                        return;
+                }
+
+                // Modify memory
+                if (!WriteProcessMemory(GetCurrentProcess(), lpAddress + i + edit.offset, edit.newValue.data(), edit.newValue.size(), NULL)) {
+                    DX_ERROR("Failed to write memory.")
+                        return;
+                }
+
+                // Restore original protection
+                DWORD dummy;
+                if (!VirtualProtect(lpAddress + i + edit.offset, edit.newValue.size(), oldProtect, &dummy)) {
+                    DX_ERROR("Failed to restore memory protection.")
+                        return;
+                }
+
+                DX_PRINT("Hex edited successfully.")
+                    break;
+            }
+        }
+    }
+}
+
+// Function to perform the hex edits
+void PerformHexEdits3() {
+    // Get the handle to the current module
+    HMODULE hModule = GetModuleHandle(NULL);
+    if (hModule == NULL) {
+        DX_ERROR("Failed to get module handle.")
+            return;
+    }
+
+    // Get the module information
+    LPBYTE lpAddress = reinterpret_cast<LPBYTE>(hModule);
+    DWORD moduleSize = 0; // Placeholder for module size
+    TCHAR szFileName[MAX_PATH];
+    if (GetModuleFileNameEx(GetCurrentProcess(), hModule, szFileName, MAX_PATH)) {
+        moduleSize = GetFileSize(szFileName, NULL);
+    }
+    if (moduleSize == 0) {
+        DX_ERROR("Failed to get module information.")
+            return;
+    }
+
+    // Perform the hex edit
+    PerformHexEdit3(lpAddress, moduleSize);
+}
+
+//chip - 3 fov
+
 //=======================================================================================================================================================================================
 
 void HookModule(HMODULE hmod);
@@ -1216,6 +1300,7 @@ bool WINAPI DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
             bAlwaysOnTop = GetPrivateProfileInt("FORCEWINDOWED", "AlwaysOnTop", 0, path) != 0;
             bDoNotNotifyOnTaskSwitch = GetPrivateProfileInt("FORCEWINDOWED", "DoNotNotifyOnTaskSwitch", 0, path) != 0;
             nForceWindowStyle = GetPrivateProfileInt("FORCEWINDOWED", "ForceWindowStyle", 0, path);
+            bFov = GetPrivateProfileInt("FOV", "fov", 0, path) != 0;
 
             if (fFPSLimit > 0.0f)
             {
@@ -1228,6 +1313,11 @@ bool WINAPI DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
             }
             else
                 mFPSLimitMode = FrameLimiter::FPSLimitMode::FPS_NONE;
+
+            if (bFov)
+            {
+                PerformHexEdits3();
+            }
 
             if (bDoNotNotifyOnTaskSwitch)
             {
