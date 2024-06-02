@@ -11,6 +11,8 @@ aspect ratio by default is 0 which is 16:9 as origionally but we added some more
 
 Default for FPS cap is 60 you can change it as you like or uncap with 0 (IMPORTANT- we have fully tested the game at 60fps and above, 60fps works perfectly but anything above 60 is broken) highly suggest leaving the cap to 60 or it will break.
 
+Default for fov is 1 (on) you can turn it off in the ini with fov = 0 (off) this will set FOV to its default value. this setting is only on or off in this fix. 
+
 if you would like to leave feedback or submit a bug please use the form provided:
 
 https://docs.google.com/forms/d/e/1FAIpQLSdv3ZLgAC4CnxVHoOOSJA9NLVqlkPf2qENGehvCtfkkzZc1dw/viewform?usp=sharing
