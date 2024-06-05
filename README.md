@@ -3,7 +3,7 @@ This is the Harry Potter and the Deathly Hallows Part 2 d3d9 wrapper which is ba
 
 https://github.com/ThirteenAG/d3d9-wrapper
 
-simply put the d3d9.dll and d3d9.ini into your game folder next to the game exe and your good to go
+simply go to releases and download the hp8fix.zip or  hp8NonEAAPPversion.zip  depending on your version of the game put the d3d9.dll and d3d9.ini into your game folder next to the game exe and your good to go
 
 you can edit settings in d3d9.ini
 
