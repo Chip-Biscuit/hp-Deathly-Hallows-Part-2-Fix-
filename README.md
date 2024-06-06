@@ -21,4 +21,4 @@ brought to you by Fix Enhancers
 
 Team:
 
-Chip, JokerAlex21, JukedLuke, Blankname.
+Chip, JokerAlex21, Blankname.
