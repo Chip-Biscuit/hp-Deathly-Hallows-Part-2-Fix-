@@ -1,7 +1,4 @@
 # hp-Deathly-Hallows-Part-2-Fix-
-This is the Harry Potter and the Deathly Hallows Part 2 d3d9 wrapper which is based from 13AG d3d9.dll wrapper.
-
-https://github.com/ThirteenAG/d3d9-wrapper
 
 simply go to releases and download the hp8fix.zip or  hp8NonEAAPPversion.zip  depending on your version of the game put the d3d9.dll and d3d9.ini into your game folder next to the game exe and your good to go
 
@@ -22,3 +19,7 @@ brought to you by Fix Enhancers
 Team:
 
 Chip, JokerAlex21, Blankname.
+
+This is the Harry Potter and the Deathly Hallows Part 2 d3d9 wrapper which is based from 13AG d3d9.dll wrapper.
+
+https://github.com/ThirteenAG/d3d9-wrapper
