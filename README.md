@@ -10,6 +10,10 @@ Default for FPS cap is 60 you can change it as you like or uncap with 0 (IMPORTA
 
 Default for fov is 1 (on) you can turn it off in the ini with fov = 0 (off) this will set FOV to its default value. this setting is only on or off in this fix. 
 
+for a comprehensive guide to the fix please see this video
+
+https://www.youtube.com/watch?v=FSrXKPkEST0
+
 if you would like to leave feedback or submit a bug please use the form provided:
 
 https://docs.google.com/forms/d/e/1FAIpQLSdv3ZLgAC4CnxVHoOOSJA9NLVqlkPf2qENGehvCtfkkzZc1dw/viewform?usp=sharing
