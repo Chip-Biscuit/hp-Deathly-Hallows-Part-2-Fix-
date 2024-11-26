@@ -1,7 +1,5 @@
 # hp-Deathly-Hallows-Part-2-Fix-
-This is the Harry Potter and the Deathly Hallows Part 2 d3d9 wrapper which is based from 13AG d3d9.dll wrapper.
-
-https://github.com/ThirteenAG/d3d9-wrapper
+This is the Harry Potter and the Deathly Hallows Part 2 d3d9 wrapper.
 
 simply go to releases and download the hp8fix.zip or  hp8NonEAAPPversion.zip  depending on your version of the game put the d3d9.dll and d3d9.ini into your game folder next to the game exe and your good to go
 
@@ -16,6 +14,8 @@ Default for fov is 1 (on) you can turn it off in the ini with fov = 0 (off) this
 if you would like to leave feedback or submit a bug please use the form provided:
 
 https://docs.google.com/forms/d/e/1FAIpQLSdv3ZLgAC4CnxVHoOOSJA9NLVqlkPf2qENGehvCtfkkzZc1dw/viewform?usp=sharing
+
+credit to Elisha Riedlinger for the base wrapper and 13 AG.
 
 brought to you by Fix Enhancers
 
